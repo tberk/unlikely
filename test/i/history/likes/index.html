@@ -1,0 +1,86 @@
+<!doctype html>
+<!-- Mock of X's likes timeline for exercising src/content.js without touching a real account.
+     Serve test/ with any static server and open /i/history/likes/ — see README. -->
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mock likes</title>
+<style>
+  body { font: 14px sans-serif; background: #000; color: #e7e9ea; margin: 0; }
+  main { max-width: 600px; margin: 0 auto; }
+  article { border-bottom: 1px solid #2f3336; padding: 24px 16px; height: 120px; }
+  [data-testid=unlike] { color: #f91880; } [data-testid=like] { color: #71767b; }
+  button { background: none; border: 1px solid currentColor; border-radius: 99px; padding: 4px 12px; cursor: pointer; }
+  #log { position: fixed; top: 8px; right: 8px; background: #16181c; padding: 8px; font: 12px monospace; }
+</style>
+<script>
+  // Minimal chrome.* stub so the content script can load outside an extension.
+  window.__listeners = [];
+  window.chrome = {
+    runtime: { onMessage: { addListener: (fn) => __listeners.push(fn) } },
+    storage: { local: {
+      _d: {},
+      get(def, cb) { cb({ ...def, ...this._d }); },
+      set(obj) { Object.assign(this._d, obj); },
+    } },
+  };
+  window.send = (msg) => new Promise((r) => __listeners[0](msg, {}, r));
+</script>
+</head>
+<body>
+<div id="log"></div>
+<main><div data-testid="primaryColumn"><section id="tl"></section></div></main>
+<script>
+  const params = new URLSearchParams(location.search);
+  const TOTAL = +(params.get('total') || 25);
+  const FAIL_AFTER = +(params.get('failAfter') || Infinity); // simulate rate-limit after N unlikes
+  const GHOST_EVERY = +(params.get('ghostEvery') || 0);
+  const PAGE = 10;
+  const stats = { unlikes: 0, likes: 0, rejected: 0 };
+  let rendered = 0;
+  // Unliked tweets disappear from the list on reload, like on X.
+  const gone = new Set(JSON.parse(sessionStorage.getItem('mock:gone') || '[]'));
+  const forget = (i) => { gone.add(i); sessionStorage.setItem('mock:gone', JSON.stringify([...gone])); };
+  const log = () => (document.getElementById('log').textContent = JSON.stringify(stats));
+
+  function tweet(i) {
+    const ghost = GHOST_EVERY && i % GHOST_EVERY === 0;
+    const a = document.createElement('article');
+    a.innerHTML = `<div>@user${i} · <a href="/user${i}/status/${1000 + i}"><time>1h</time></a></div>
+      <p>Mock liked tweet #${i}${ghost ? ' (ghost)' : ''}</p>
+      <button data-testid="${ghost ? 'like' : 'unlike'}">♥</button>`;
+    const b = a.querySelector('button');
+    b.onclick = () => {
+      const wasLiked = b.dataset.testid === 'unlike';
+      b.dataset.testid = wasLiked ? 'like' : 'unlike'; // optimistic flip, like X
+      if (wasLiked && stats.unlikes >= FAIL_AFTER) {
+        stats.rejected++;
+        setTimeout(() => (b.dataset.testid = 'unlike'), 300); // server rejects -> snap back
+      } else if (wasLiked) { stats.unlikes++; forget(i); } else { stats.likes++; gone.delete(i); }
+      log();
+    };
+    return a;
+  }
+
+  function more() {
+    const tl = document.getElementById('tl');
+    const spin = document.createElement('div');
+    spin.setAttribute('role', 'progressbar');
+    spin.textContent = 'loading…';
+    tl.append(spin);
+    setTimeout(() => {
+      spin.remove();
+      for (let n = 0; n < PAGE && rendered < TOTAL; ) if (!gone.has(++rendered)) { tl.append(tweet(rendered)); n++; }
+    }, 400);
+  }
+  more();
+  addEventListener('scroll', () => {
+    const el = document.scrollingElement;
+    if (rendered < TOTAL && !document.querySelector('[role=progressbar]') &&
+        el.scrollTop + innerHeight > el.scrollHeight - 300) more();
+  });
+  log();
+</script>
+<script src="/content.js"></script>
+</body>
+</html>

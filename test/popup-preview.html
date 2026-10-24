@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- Generated preview of src/popup.html with stubbed chrome APIs. Serve the repo root and open /test/popup-preview.html?state=running -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Unlikely</title>
+    <link rel="stylesheet" href="../src/popup.css" />
+    <script>
+      // Preview-only stub of the chrome.* APIs the popup uses. ?state=away|ready|running|cooldown|done
+      const mode = new URLSearchParams(location.search).get('state') || 'running';
+      const runs = {
+        ready: { running: false, phase: 'idle', message: '', count: 0 },
+        running: { running: true, phase: 'working', message: 'Unliking…', count: 137 },
+        cooldown: { running: true, phase: 'cooldown', message: '', count: 412, cooldownUntil: Date.now() + 95000 },
+        done: { running: false, phase: 'done', message: 'All done — no more likes found.', count: 1024 },
+      };
+      const noop = { addListener() {} };
+      window.chrome = {
+        tabs: {
+          query: async () => [{ id: 1, url: mode === 'away' ? 'https://example.com/' : 'https://x.com/i/history/likes' }],
+          sendMessage: async () => (mode === 'away' ? null : { run: runs[mode], likesPage: true }),
+          update: async () => {}, create: async () => {},
+        },
+        scripting: { executeScript: async () => { throw new Error('preview'); } },
+        storage: { onChanged: noop, sync: { get: async (d) => d, set: async () => {} }, local: { get: async () => ({ total: 3210 }) } },
+      };
+    </script>
+  </head>
+  <body style="border:1px solid #2f3336; margin:20px">
+    <header>
+      <img src="../icons/icon32.png" alt="" width="20" height="20" />
+      <h1>Unlikely</h1>
+      <span id="total" class="muted" title="Likes removed all time"></span>
+    </header>
+
+    <section id="view-away" hidden>
+      <p>Open your likes page on X, then press <b>Start</b>.</p>
+      <button id="open-likes" class="primary">Open my likes</button>
+    </section>
+
+    <section id="view-ready" hidden>
+      <div class="stat">
+        <span id="count">0</span>
+        <span class="muted">unliked this run</span>
+      </div>
+      <p id="status" class="status muted">Ready.</p>
+
+      <button id="toggle" class="primary">Start</button>
+
+      <details id="settings">
+        <summary>Settings</summary>
+        <label class="row">
+          <span>Speed</span>
+          <span class="seg" role="radiogroup">
+            <input type="radio" name="speed" id="speed-careful" value="careful" />
+            <label for="speed-careful">Careful</label>
+            <input type="radio" name="speed" id="speed-normal" value="normal" />
+            <label for="speed-normal">Normal</label>
+            <input type="radio" name="speed" id="speed-fast" value="fast" />
+            <label for="speed-fast">Fast</label>
+          </span>
+        </label>
+        <label class="row">
+          <span>Stop after</span>
+          <span><input type="number" id="limit" min="0" step="50" placeholder="all" /> likes</span>
+        </label>
+        <label class="row check">
+          <input type="checkbox" id="ghosts" />
+          <span>Also clear “ghost” likes <span class="muted">(listed, but heart not filled)</span></span>
+        </label>
+      </details>
+    </section>
+
+    <footer class="muted">You can close this popup — it keeps running in the tab.</footer>
+
+    <script src="../src/popup.js"></script>
+  </body>
+</html>
