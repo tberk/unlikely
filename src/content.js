@@ -5,8 +5,8 @@
   if (window.__unlikelyLoaded) return;
   window.__unlikelyLoaded = true;
 
-  const SPEEDS = { careful: 2500, normal: 1200, fast: 600 };
-  const DEFAULTS = { speed: 'normal', limit: 0, ghosts: false };
+  const SPEEDS = { careful: 1000, normal: 500, fast: 50 };
+  const DEFAULTS = { speed: 'fast', limit: 0, ghosts: false };
   const RUN_KEY = 'unlikely:run';
   const DONE_KEY = 'unlikely:done';
   const COOLDOWN_MIN = 2 * 60_000;
@@ -44,7 +44,7 @@
     try {
       if (run.running) sessionStorage.setItem(RUN_KEY, JSON.stringify({ run, settings }));
       else sessionStorage.removeItem(RUN_KEY);
-    } catch {}
+    } catch { }
   }
 
   function markHandled(id) {
@@ -52,7 +52,7 @@
     handled.add(id);
     try {
       sessionStorage.setItem(DONE_KEY, JSON.stringify([...handled].slice(-5000)));
-    } catch {}
+    } catch { }
   }
 
   function update(patch) {

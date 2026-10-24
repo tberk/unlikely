@@ -32,7 +32,7 @@ Keep the tab open. It can be in the background, but Chrome may slow down backgro
 
 | Setting | What it does |
 | --- | --- |
-| Speed | Pause between unlikes: Careful ≈ 2.5 s, Normal ≈ 1.2 s, Fast ≈ 0.6 s (each ± 25 % jitter). Slower settings hit rate limits less. |
+| Speed | Pause between unlikes: Careful ≈ 1 s, Normal ≈ 0.5 s, Fast ≈ 0.05 s (each ± 25 % jitter). Fast is the default. Slower settings hit rate limits less. |
 | Stop after | Stop after N likes. Leave empty to remove all of them. |
 | Ghost likes | Some old likes show up on the likes page with an empty heart. X still counts them, but clicking unlike does nothing. With this on, Unlikely likes them again and immediately unlikes them, which removes them for real. |
 

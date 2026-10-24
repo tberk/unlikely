@@ -1,5 +1,5 @@
 const LIKES_URL = 'https://x.com/i/history/likes';
-const DEFAULTS = { speed: 'normal', limit: 0, ghosts: false };
+const DEFAULTS = { speed: 'fast', limit: 0, ghosts: false };
 
 const $ = (id) => document.getElementById(id);
 let tab = null;
