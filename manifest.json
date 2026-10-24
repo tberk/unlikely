@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Unlikely",
+  "name": "Unlikely: Unlike All Tweets & Delete X (Twitter) Likes in Bulk",
   "short_name": "Unlikely",
-  "version": "0.1.0",
-  "description": "Bulk-remove your likes on X (Twitter). Open your likes page, press Start, walk away.",
+  "version": "1.0.0",
+  "description": "Mass unlike tweets and remove all your likes on X (Twitter) in one click. Free, open source, no login, no data collected.",
+  "homepage_url": "https://github.com/tberk/unlikely",
   "permissions": [
     "storage",
     "scripting"

@@ -10,6 +10,8 @@ import zlib
 PINK = (249, 24, 128)
 SIZES = (16, 32, 48, 128)
 SS = 4  # supersampling factor for anti-aliasing
+# Transparent padding per size. Chrome Web Store wants 96px of art inside the 128px icon.
+PAD = {128: 16}
 OUT = os.path.join(os.path.dirname(__file__), "..", "icons")
 
 
@@ -42,11 +44,14 @@ def coverage(px, py, size):
 
 
 def png(size):
+    pad = PAD.get(size, 0)
+    art = size - 2 * pad
     rows = []
     for py in range(size):
         row = bytearray([0])  # filter: none
         for px in range(size):
-            alpha, _ = coverage(px, py, size)
+            ax, ay = px - pad, py - pad
+            alpha = coverage(ax, ay, art)[0] if 0 <= ax < art and 0 <= ay < art else 0
             row += bytes((*PINK, round(alpha * 255)))
         rows.append(bytes(row))
     raw = b"".join(rows)
