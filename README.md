@@ -1,5 +1,11 @@
 # Unlikely
 
+<p>
+  <a href="https://chromewebstore.google.com/detail/unlikely-unlike-all-tweet/fpclmjagabhijjgopboehemekoalbbfm"><img alt="Chrome Web Store version" src="https://img.shields.io/chrome-web-store/v/fpclmjagabhijjgopboehemekoalbbfm?label=Chrome%20Web%20Store&logo=googlechrome&logoColor=white"></a>
+  <a href="https://chromewebstore.google.com/detail/unlikely-unlike-all-tweet/fpclmjagabhijjgopboehemekoalbbfm"><img alt="Chrome Web Store users" src="https://img.shields.io/chrome-web-store/users/fpclmjagabhijjgopboehemekoalbbfm?label=users"></a>
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-blue"></a>
+</p>
+
 A tiny Chrome (and any Chromium browser) extension that removes all your likes on X (Twitter). Open your likes page, press **Start**, walk away.
 
 Free, open source, no login, no data collected. See the [privacy policy](PRIVACY.md).
@@ -8,7 +14,7 @@ Free, open source, no login, no data collected. See the [privacy policy](PRIVACY
 
 ## Install
 
-From the Chrome Web Store (works in Chrome, Brave, Edge and other Chromium browsers): _link coming once the listing is live_.
+From the Chrome Web Store (works in Chrome, Brave, Edge and other Chromium browsers): **[Unlikely on the Chrome Web Store](https://chromewebstore.google.com/detail/unlikely-unlike-all-tweet/fpclmjagabhijjgopboehemekoalbbfm)**.
 
 Or load it from source:
 
